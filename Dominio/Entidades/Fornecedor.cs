@@ -1,20 +1,26 @@
 ﻿using Flunt.Validations;
 using GestaoProdutos.Dominio.ObjetosDeValor;
+using System.Collections.Generic;
 
 namespace GestaoProdutos.Dominio.Entidades
 {
     public class Fornecedor : Entidade, IRaizAgregacao
     {
-        public int Codigo { get; set; }
-        public string Nome { get; set; }
-        public string Descricao { get; set; }
-        public Cnpj Cnpj { get; set; }
+        public int Codigo { get; private set; }
+        public string Nome { get; private set; }
+        public string Descricao { get; private set; }
+        public Cnpj Cnpj { get; private set; }
+
+        private readonly List<Produto> _produtos;
+        public IReadOnlyCollection<Produto> Produtos => _produtos;
 
         protected Fornecedor() { }
 
-        public Fornecedor(string nome, string Descricao, string cnpj)
+        public Fornecedor(string nome, string descricao, string cnpj)
         {
-
+            AlterarNome(nome, true);
+            AlterarDescricao(descricao, true);
+            AlterarCnpj(cnpj, true);
         }
 
         public Fornecedor AlterarNome(string nome, bool novo)
@@ -24,7 +30,7 @@ namespace GestaoProdutos.Dominio.Entidades
 
             Nome = nome;
 
-            AddNotifications(new Contract<Fornecedor>().Requires().IsLowerOrEqualsThan(Nome.Length, 200, nameof(Nome), "Limite máximo de 200 caracteres excedido."));
+            AddNotifications(new Contract<Fornecedor>().Requires().IsLowerOrEqualsThan(Nome.Length, 200, nameof(Nome), "Limite máximo de 250 caracteres excedido."));
 
             Modificada = true;
 

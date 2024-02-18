@@ -5,7 +5,7 @@ namespace GestaoProdutos.Dominio.ObjetosDeValor
 {
     public class Cnpj : Notifiable<Notification>
     {
-        public const int CnpjMaxLength = 14;
+        public const int CnpjTamanhoMaximo = 14;
         public string Numero { get; private set; }
 
         //Construtor do EntityFramework
