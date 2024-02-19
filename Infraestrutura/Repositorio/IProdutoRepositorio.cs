@@ -1,16 +1,17 @@
 ﻿using GestaoProdutos.Dominio.Entidades;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace GestaoProdutos.Infraestrutura.Repositorio
 {
     public interface IProdutoRepositorio : IRepositorio<Produto>
     {
-        void Adicionar(Produto produto);
+        Task AdicionarAsync(Produto produto, CancellationToken cancellationToken);
 
-        Task<IEnumerable<Produto>> ObterTodos(string descricaoProduto, string nomeFornecedor, int codigoFornecedor, int pagina = 1, int quantidadePorPagina = 10);
+        Task<IEnumerable<Produto>> ObterTodosAsync(string descricaoProduto, string nomeFornecedor, int? codigoFornecedor, bool? ativo, int pagina, int quantidadePorPagina, CancellationToken cancellationToken);
 
-        Task<Produto> ObterPorCodigo(int codigo);
+        Task<Produto> ObterPorCodigoAsync(int codigo, CancellationToken cancellationToken);
 
         void Atualizar(Produto produto);
     }

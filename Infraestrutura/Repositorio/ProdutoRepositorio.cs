@@ -3,6 +3,7 @@ using GestaoProdutos.Infraestrutura.Contextos;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace GestaoProdutos.Infraestrutura.Repositorio
@@ -17,19 +18,19 @@ namespace GestaoProdutos.Infraestrutura.Repositorio
         }
         public IUnidadeDeTrabalho UnidadeDeTrabalho => _context;
 
-        public void Adicionar(Produto produto)
+        public async Task AdicionarAsync(Produto produto, CancellationToken cancellationToken)
         {
-            _context.Produtos.Add(produto);
+            await _context.Produtos.AddAsync(produto, cancellationToken);
         }
 
-        public async Task<Produto> ObterPorCodigo(int codigo)
+        public async Task<Produto> ObterPorCodigoAsync(int codigo, CancellationToken cancellationToken)
         {
-            return await _context.Produtos.FirstOrDefaultAsync(p => p.Codigo == codigo);
+            return await _context.Produtos.FirstOrDefaultAsync(p => p.Codigo == codigo, cancellationToken);
         }
 
-        public async Task<IEnumerable<Produto>> ObterTodos(string descricaoProduto, string nomeFornecedor, int codigoFornecedor, int pagina = 1, int quantidadePorPagina = 10)
+        public async Task<IEnumerable<Produto>> ObterTodosAsync(string descricaoProduto, string nomeFornecedor, int? codigoFornecedor, bool? ativo, int pagina, int quantidadePorPagina, CancellationToken cancellationToken)
         {
-            var query = _context.Produtos.Include(p => p.Fornecedor).AsQueryable();
+            var query = _context.Produtos.AsNoTracking().Include(p => p.Fornecedor).AsQueryable();
 
             if (!string.IsNullOrEmpty(descricaoProduto))
                 query.Where(p => p.Descricao.Contains(descricaoProduto));
@@ -37,9 +38,11 @@ namespace GestaoProdutos.Infraestrutura.Repositorio
             if (!string.IsNullOrEmpty(nomeFornecedor))
                 query.Where(p => p.Fornecedor.Nome.Contains(nomeFornecedor));
 
-            if (codigoFornecedor > 0)
-                query.Where(p => p.Fornecedor.Codigo == codigoFornecedor);
+            if (codigoFornecedor.HasValue)
+                query.Where(p => p.Fornecedor.Codigo == codigoFornecedor.Value);
 
+            if (ativo.HasValue)
+                query.Where(p => p.Ativo == ativo.Value);
 
             if (pagina > 1)
             {
@@ -50,7 +53,7 @@ namespace GestaoProdutos.Infraestrutura.Repositorio
 
             query.Take(quantidadePorPagina);
 
-            return await query.ToListAsync();
+            return await query.ToListAsync(cancellationToken);
         }
 
         public void Atualizar(Produto produto)

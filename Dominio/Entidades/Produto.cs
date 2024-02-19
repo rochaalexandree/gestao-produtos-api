@@ -47,7 +47,7 @@ namespace GestaoProdutos.Dominio.Entidades
         public void Ativar() => Ativo = true;
         public void Desativar() => Ativo = false;
 
-        public Produto AlterarDataFabricacao(DateTime dataFabricacao, bool novo)
+        public Produto AlterarDataFabricacao(DateTime dataFabricacao, bool novo = false)
         {
             if (!novo && dataFabricacao.Equals(DataFabricacao))
                 return this;
@@ -61,7 +61,7 @@ namespace GestaoProdutos.Dominio.Entidades
             return this;
         }
         
-        public Produto AlterarDataValidade(DateTime dataValidade, bool novo)
+        public Produto AlterarDataValidade(DateTime dataValidade, bool novo = false)
         {
             if (!novo && dataValidade.Equals(DataValidade))
                 return this;
@@ -75,7 +75,7 @@ namespace GestaoProdutos.Dominio.Entidades
             return this;
         }
 
-        public Produto AlterarFornecedor(Guid? fornecedorId, bool novo)
+        public Produto AlterarFornecedor(Guid? fornecedorId, bool novo = false)
         {
             if (!novo && fornecedorId.Equals(FornecedorId))
                 return this;
@@ -83,6 +83,16 @@ namespace GestaoProdutos.Dominio.Entidades
             FornecedorId = fornecedorId;
 
             Modificada = true;
+
+            return this;
+        }
+
+        public Produto AtualizarProduto(string descricao, DateTime dataFabricacao, DateTime dataValidade, Guid? fornecedorId)
+        {
+            AlterarDescricao(descricao);
+            AlterarDataFabricacao(dataFabricacao);
+            AlterarDataValidade(dataValidade);
+            AlterarFornecedor(fornecedorId);
 
             return this;
         }

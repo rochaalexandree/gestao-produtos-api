@@ -11,6 +11,7 @@ namespace GestaoProdutos.Infraestrutura.Mapeamentos
         {
             builder.HasKey(p => p.Id);
 
+            builder.HasAlternateKey(p => p.Codigo);
             builder.Property(f => f.Codigo).ValueGeneratedOnAdd();
 
             builder.Property(f => f.Nome)
@@ -21,6 +22,9 @@ namespace GestaoProdutos.Infraestrutura.Mapeamentos
                 .IsRequired()
                 .HasColumnType("varchar(500)");
 
+            builder.Ignore(f => f.Notifications);
+            builder.Ignore(p => p.Modificada);
+
             builder.OwnsOne(f => f.Cnpj, tj =>
             {
                 tj.Property(c => c.Numero)
@@ -28,6 +32,8 @@ namespace GestaoProdutos.Infraestrutura.Mapeamentos
                     .HasMaxLength(Cnpj.CnpjTamanhoMaximo)
                     .HasColumnName("Cnpj")
                     .HasColumnType($"varchar({Cnpj.CnpjTamanhoMaximo})");
+
+                tj.Ignore(c => c.Notifications);
             });
 
         }

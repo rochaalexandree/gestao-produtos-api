@@ -12,7 +12,7 @@ namespace GestaoProdutos.Configuracao
         public static void AddApiConfiguracao(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<AppContext>(options =>
-                options.UseSqlite(configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
             services.AddControllers();
 
