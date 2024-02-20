@@ -25,6 +25,7 @@ namespace GestaoProdutos
         {
             services.AddApiConfiguracao(Configuration);
             services.AddSwaggerConfiguracao();
+            services.RegistrarMapeamentoAutoMapper();
             services.RegistrarServicos();
         }
 

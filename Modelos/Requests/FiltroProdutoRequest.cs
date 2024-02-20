@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Globalization;
 
-namespace GestaoProdutos.Aplicacao.Dto
+namespace GestaoProdutos.Modelos.Requests
 {
-    public class FiltroProdutoDto : Paginacao
+    public class FiltroProdutoRequest : PaginacaoRequest
     {
         public Guid? Id { get; set; }
         public string Descricao { get; set; } = null;

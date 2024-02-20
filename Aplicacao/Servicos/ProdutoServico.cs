@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace GestaoProdutos.Aplicacao.Servicos
 {
-    public class ProdutoServico : Resposta<Guid>
+    public class ProdutoServico : Resposta<Guid>, IProdutoServico
     {
         private readonly IProdutoRepositorio _produtoRepositorio;
 
@@ -30,7 +30,7 @@ namespace GestaoProdutos.Aplicacao.Servicos
 
             var resultado = await PersistirDados(_produtoRepositorio.UnidadeDeTrabalho);
 
-            if (!resultado.IsValid)
+            if (!resultado.Sucesso)
                 return resultado;
 
             return new Resposta<Guid>(produto.Id);
@@ -44,31 +44,36 @@ namespace GestaoProdutos.Aplicacao.Servicos
             
             var resultado = await PersistirDados(_produtoRepositorio.UnidadeDeTrabalho);
 
-            if (!resultado.IsValid)
+            if (!resultado.Sucesso)
                 return resultado;
 
             return new Resposta<Guid>(produto.Id);
         }
 
-        public async Task<IEnumerable<Produto>> ListarProdutosAsync(FiltroProdutoDto filtroDto, CancellationToken cancellationToken)
+        public async Task<Resposta<IEnumerable<object>>> ListarProdutosAsync(FiltroProdutoDto filtroDto, CancellationToken cancellationToken)
         {
-            return await _produtoRepositorio.ObterTodosAsync(filtroDto.Descricao, filtroDto.nomeFornecedor, filtroDto.codigoFornecedor, filtroDto.Ativo, filtroDto.pagina, filtroDto.quantidadePorPagina, cancellationToken);
+            var paginacao = new Paginacao(filtroDto.Pagina, filtroDto.QuantidadePorPagina);
+            var retorno = await _produtoRepositorio.ObterTodosAsync(filtroDto.Descricao, filtroDto.nomeFornecedor, filtroDto.codigoFornecedor, filtroDto.Ativo, filtroDto.Pagina, filtroDto.QuantidadePorPagina, cancellationToken);
+            return new Resposta<IEnumerable<object>>(retorno, paginacao);
         }
 
-        public async Task<Produto> ObterProdutoPorCodigoAsync(int codigo, CancellationToken cancellationToken)
+        public async Task<Resposta<object>> ObterProdutoPorCodigoAsync(int codigo, CancellationToken cancellationToken)
         {
-            return await _produtoRepositorio.ObterPorCodigoAsync(codigo, cancellationToken);
+            return new Resposta<object>(await _produtoRepositorio.ObterPorCodigoAsync(codigo, cancellationToken));
         }
 
         public async Task<Resposta<Guid>> AtualizarProdutoAsync(ProdutoDto produtoDto, CancellationToken cancellationToken)
         {
-            var produto = await _produtoRepositorio.ObterPorCodigoAsync(codigo, cancellationToken);
+            var produto = await _produtoRepositorio.ObterPorCodigoAsync(produtoDto.Codigo.Value, cancellationToken);
 
-            produto.AtualizarProduto();
+            produto.AtualizarProduto(produtoDto.Descricao, produtoDto.DataFabricacao, produtoDto.DataValidade, produtoDto.FornecedorId ?? produto.FornecedorId);
+
+            if (!produto.IsValid)
+                return new Resposta<Guid>(produto.Notifications);
 
             var resultado = await PersistirDados(_produtoRepositorio.UnidadeDeTrabalho);
 
-            if (!resultado.IsValid)
+            if (!resultado.Sucesso)
                 return resultado;
 
             return new Resposta<Guid>(produto.Id);

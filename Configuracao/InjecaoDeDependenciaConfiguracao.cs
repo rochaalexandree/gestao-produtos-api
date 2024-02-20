@@ -1,4 +1,5 @@
-﻿using GestaoProdutos.Infraestrutura.Contextos;
+﻿using GestaoProdutos.Aplicacao.Servicos;
+using GestaoProdutos.Infraestrutura.Contextos;
 using GestaoProdutos.Infraestrutura.Repositorio;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +15,8 @@ namespace GestaoProdutos.Configuracao
             
             services.AddScoped<IProdutoRepositorio, ProdutoRepositorio>();
             //services.AddScoped<IFornecedorRepositorio, FornecedorRepositorio>();
+            services.AddScoped<IProdutoServico, ProdutoServico>();
+
             services.AddScoped<AppContext>();
         }
     }

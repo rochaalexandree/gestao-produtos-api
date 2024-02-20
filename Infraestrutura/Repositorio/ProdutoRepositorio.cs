@@ -25,7 +25,7 @@ namespace GestaoProdutos.Infraestrutura.Repositorio
 
         public async Task<Produto> ObterPorCodigoAsync(int codigo, CancellationToken cancellationToken)
         {
-            return await _context.Produtos.FirstOrDefaultAsync(p => p.Codigo == codigo, cancellationToken);
+            return await _context.Produtos.Include(p => p.Fornecedor).FirstOrDefaultAsync(p => p.Codigo == codigo, cancellationToken);
         }
 
         public async Task<IEnumerable<Produto>> ObterTodosAsync(string descricaoProduto, string nomeFornecedor, int? codigoFornecedor, bool? ativo, int pagina, int quantidadePorPagina, CancellationToken cancellationToken)

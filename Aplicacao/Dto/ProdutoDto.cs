@@ -4,6 +4,7 @@ namespace GestaoProdutos.Aplicacao.Dto
 {
     public class ProdutoDto
     {
+        public int? Codigo { get; set; }
         public string Descricao { get; set; }
         public bool Ativo { get; set; }
         public DateTime DataFabricacao { get; set; }
