@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using GestaoProdutos.Aplicacao.Dto;
 using System.Threading;
 using GestaoProdutos.Infraestrutura.Contextos;
+using Microsoft.OpenApi.Any;
 
 namespace GestaoProdutos.Teste
 {
@@ -21,11 +22,13 @@ namespace GestaoProdutos.Teste
         {
             //Arrange
             var produtoRepositorio = new Mock<IProdutoRepositorio>();
-
             var unidadeDeTrabalho = new Mock<IUnidadeDeTrabalho>();
+            
             unidadeDeTrabalho.Setup(u => u.Commit()).Returns(Task.FromResult(true));
             produtoRepositorio.Setup(p => p.UnidadeDeTrabalho).Returns(unidadeDeTrabalho.Object);
+
             var produtoServico = new ProdutoServico(produtoRepositorio.Object);
+
             var produtoDto = new ProdutoDto
             {
                 Ativo = true,
@@ -39,6 +42,43 @@ namespace GestaoProdutos.Teste
 
             //Assert
             resultado.Sucesso.Should().BeTrue();
+            resultado.Resultado.Should().NotBeEmpty();
+            resultado.Erros.Should().BeEmpty();
+        }
+
+        [Fact(DisplayName = "Adicionar produto valido Async")]
+        public async Task Produto_AtualizarProduto_DeveRetornarSucesso()
+        {
+            //Arrange
+            var produtoRepositorio = new Mock<IProdutoRepositorio>();
+            var unidadeDeTrabalho = new Mock<IUnidadeDeTrabalho>();
+
+            unidadeDeTrabalho.Setup(u => u.Commit()).Returns(Task.FromResult(true));
+            produtoRepositorio.Setup(p => p.UnidadeDeTrabalho).Returns(unidadeDeTrabalho.Object);
+            
+            var produto = new Produto("Produto teste", true, DateTime.Now, DateTime.Now.AddMonths(1), Guid.NewGuid());
+            
+            produtoRepositorio
+                .Setup(p => p.ObterPorCodigoAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult(produto));
+
+            var produtoServico = new ProdutoServico(produtoRepositorio.Object);
+
+            var produtoDto = new ProdutoDto
+            {
+                Ativo = true,
+                Descricao = "Produto de teste",
+                DataFabricacao = DateTime.Now,
+                DataValidade = DateTime.Now.AddDays(1),
+            };
+
+            //Act
+            var resultado = await produtoServico.AtualizarProdutoAsync(1, produtoDto, CancellationToken.None);
+
+            //Assert
+            resultado.Sucesso.Should().BeTrue();
+            resultado.Resultado.Should().NotBeEmpty();
+            resultado.Erros.Should().BeEmpty();
         }
     }
 }
