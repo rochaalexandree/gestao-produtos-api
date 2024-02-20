@@ -8,7 +8,7 @@ namespace GestaoProdutos.Teste
     public class FornecedorTeste
     {
         [Fact(DisplayName = "Instanciar novo Fornecedor valido")]
-        public void Produto_InstaciarNovoFornecedor_DeveEstarValido()
+        public void Fornecedor_InstaciarNovoFornecedor_DeveEstarValido()
         {
             var produto = new Fornecedor("Fornecedor teste", "Descricao do fornecedor", "97120859000176");
 
@@ -17,7 +17,7 @@ namespace GestaoProdutos.Teste
         }
 
         [Fact(DisplayName = "Instanciar novo Fornecedor invalido com notification de limite de caracteres")]
-        public void Produto_InstaciarNovoFornecedor_DeveEstarInvalidoComNotificationDeLimitacaoDeCaracteres()
+        public void Fornecedor_InstaciarNovoFornecedor_DeveEstarInvalidoComNotificationDeLimitacaoDeCaracteres()
         {
             var nome = "Fornecedor teste";
 

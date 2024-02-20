@@ -46,7 +46,7 @@ namespace GestaoProdutos.Teste
             resultado.Erros.Should().BeEmpty();
         }
 
-        [Fact(DisplayName = "Adicionar produto valido Async")]
+        [Fact(DisplayName = "Atualizar produto valido Async")]
         public async Task Produto_AtualizarProduto_DeveRetornarSucesso()
         {
             //Arrange

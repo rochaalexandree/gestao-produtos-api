@@ -30,30 +30,30 @@ namespace GestaoProdutos.Infraestrutura.Repositorio
 
         public async Task<IEnumerable<Produto>> ObterTodosAsync(string descricaoProduto, string nomeFornecedor, int? codigoFornecedor, bool? ativo, int pagina, int quantidadePorPagina, CancellationToken cancellationToken)
         {
-            var query = _context.Produtos.AsNoTracking().Include(p => p.Fornecedor).AsQueryable();
+            var query = _context.Produtos.Include(p => p.Fornecedor).AsQueryable();
 
             if (!string.IsNullOrEmpty(descricaoProduto))
-                query.Where(p => p.Descricao.Contains(descricaoProduto));
+                query = query.Where(p => p.Descricao.Contains(descricaoProduto));
 
             if (!string.IsNullOrEmpty(nomeFornecedor))
-                query.Where(p => p.Fornecedor.Nome.Contains(nomeFornecedor));
+                query = query.Where(p => p.Fornecedor.Nome.Contains(nomeFornecedor));
 
             if (codigoFornecedor.HasValue)
-                query.Where(p => p.Fornecedor.Codigo == codigoFornecedor.Value);
+                query = query.Where(p => p.Fornecedor.Codigo == codigoFornecedor.Value);
 
             if (ativo.HasValue)
-                query.Where(p => p.Ativo == ativo.Value);
+                query = query.Where(p => p.Ativo == ativo.Value);
 
             if (pagina > 1)
             {
                 var quantidadeASerPulada = (pagina - 1) * quantidadePorPagina;
 
-                query.Skip(quantidadeASerPulada);
+                query = query.Skip(quantidadeASerPulada);
             }
 
-            query.Take(quantidadePorPagina);
+            query = query.Take(quantidadePorPagina);
 
-            return await query.ToListAsync(cancellationToken);
+            return await query.ToListAsync();
         }
 
         public void Atualizar(Produto produto)

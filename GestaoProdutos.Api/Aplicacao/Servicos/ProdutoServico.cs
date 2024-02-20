@@ -3,6 +3,7 @@ using GestaoProdutos.Dominio.Entidades;
 using GestaoProdutos.Infraestrutura.Repositorio;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
