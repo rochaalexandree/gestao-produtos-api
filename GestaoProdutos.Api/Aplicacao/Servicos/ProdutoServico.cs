@@ -2,15 +2,13 @@
 using GestaoProdutos.Dominio.Entidades;
 using GestaoProdutos.Infraestrutura.Repositorio;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace GestaoProdutos.Aplicacao.Servicos
 {
-    public class ProdutoServico : Resposta<Guid>, IProdutoServico
+    public class ProdutoServico : Servico<Guid>, IProdutoServico
     {
         private readonly IProdutoRepositorio _produtoRepositorio;
 
@@ -31,7 +29,7 @@ namespace GestaoProdutos.Aplicacao.Servicos
             var resultado = await PersistirDados(_produtoRepositorio.UnidadeDeTrabalho);
 
             if (!resultado.Sucesso)
-                return resultado;
+                return new Resposta<Guid>(resultado.Erros);
 
             return new Resposta<Guid>(produto.Id);
         }
@@ -47,7 +45,7 @@ namespace GestaoProdutos.Aplicacao.Servicos
             var resultado = await PersistirDados(_produtoRepositorio.UnidadeDeTrabalho);
 
             if (!resultado.Sucesso)
-                return resultado;
+                return new Resposta<Guid>(resultado.Erros);
 
             return new Resposta<Guid>(produto.Id);
         }
@@ -78,7 +76,7 @@ namespace GestaoProdutos.Aplicacao.Servicos
             var resultado = await PersistirDados(_produtoRepositorio.UnidadeDeTrabalho);
 
             if (!resultado.Sucesso)
-                return resultado;
+                return new Resposta<Guid>(resultado.Erros);
 
             return new Resposta<Guid>(produto.Id);
         }

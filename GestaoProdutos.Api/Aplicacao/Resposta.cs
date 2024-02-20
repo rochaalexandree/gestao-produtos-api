@@ -17,7 +17,7 @@ namespace GestaoProdutos.Aplicacao
             Sucesso = true;
         }
 
-        public Resposta(IReadOnlyCollection<Notification> notifications)
+        public Resposta(IEnumerable<Notification> notifications)
         {
             Erros = notifications;
             Sucesso = false;

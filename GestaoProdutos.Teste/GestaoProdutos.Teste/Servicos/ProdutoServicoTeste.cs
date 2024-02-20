@@ -3,41 +3,42 @@ using System;
 using Xunit;
 using FluentAssertions;
 using System.Linq;
+using Moq;
+using GestaoProdutos.Aplicacao.Servicos;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
+using GestaoProdutos.Infraestrutura.Repositorio;
+using System.Threading.Tasks;
+using GestaoProdutos.Aplicacao.Dto;
+using System.Threading;
+using GestaoProdutos.Infraestrutura.Contextos;
+
 namespace GestaoProdutos.Teste
 {
     public class ProdutoServicoTeste
     {
-        [Fact(DisplayName = "Instanciar novo produto valido")]
-        public void Produto_InstaciarNovoProduto_DeveEstarValido()
+        [Fact(DisplayName = "Adicionar produto valido Async")]
+        public async Task Produto_AdicionarNovoProduto_DeveRetornarSucesso()
         {
-            var produto = new Produto("Produto teste", true, DateTime.Now, DateTime.Now.AddMonths(1), Guid.NewGuid());
+            //Arrange
+            var produtoRepositorio = new Mock<IProdutoRepositorio>();
 
-            produto.Should().NotBeNull();
-            produto.IsValid.Should().BeTrue();
-        }
+            var unidadeDeTrabalho = new Mock<IUnidadeDeTrabalho>();
+            unidadeDeTrabalho.Setup(u => u.Commit()).Returns(Task.FromResult(true));
+            produtoRepositorio.Setup(p => p.UnidadeDeTrabalho).Returns(unidadeDeTrabalho.Object);
+            var produtoServico = new ProdutoServico(produtoRepositorio.Object);
+            var produtoDto = new ProdutoDto
+            {
+                Ativo = true,
+                Descricao = "Produto de teste",
+                DataFabricacao = DateTime.Now,
+                DataValidade = DateTime.Now.AddDays(1),
+            };
 
-        [Fact(DisplayName = "Instanciar novo produto invalido com notification da data de fabricacao")]
-        public void Produto_InstaciarNovoProduto_DeveEstarInvalidoComNotificationDeDataDeFabricacao()
-        {
-            var produto = new Produto("Produto teste", true, DateTime.Now.AddMinutes(1), DateTime.Now, Guid.NewGuid());
+            //Act
+            var resultado = await produtoServico.AdicionarProdutoAsync(produtoDto, CancellationToken.None);
 
-            produto.Should().NotBeNull();
-            produto.IsValid.Should().BeFalse();
-            produto.Notifications.Should().NotBeEmpty();
-            produto.Notifications.First().Message.Should().Be("A data de fabricação não pode ser maior ou igual a data de validade.");
-        }
-
-        [Fact(DisplayName = "Instanciar novo produto valido")]
-        public void Produto_AlterarDataDeValidade_DeveEstarInvalidoComNotificationDeDataDeValidade()
-        {
-            var produto = new Produto("Produto teste", true, DateTime.Now, DateTime.Now.AddMonths(1), Guid.NewGuid());
-            
-            produto.AlterarDataValidade(DateTime.Now.AddMonths(-2));
-            
-            produto.Should().NotBeNull();
-            produto.IsValid.Should().BeFalse();
-            produto.Notifications.Should().NotBeEmpty();
-            produto.Notifications.First().Message.Should().Be("A data de fabricação não pode ser maior ou igual a data de validade.");
+            //Assert
+            resultado.Sucesso.Should().BeTrue();
         }
     }
 }

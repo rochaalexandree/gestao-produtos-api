@@ -30,10 +30,13 @@ namespace GestaoProdutos.Teste
         [Fact(DisplayName = "Alterar data de validade do produto com uma data menor que a de fabricacao")]
         public void Produto_AlterarDataDeValidade_DeveEstarInvalidoComNotificationDeDataDeValidade()
         {
+            //Arrange
             var produto = new Produto("Produto teste", true, DateTime.Now, DateTime.Now.AddMonths(1), Guid.NewGuid());
             
+            //Act
             produto.AlterarDataValidade(DateTime.Now.AddMonths(-2));
             
+            //Assert
             produto.Should().NotBeNull();
             produto.IsValid.Should().BeFalse();
             produto.Notifications.Should().NotBeEmpty();
