@@ -10,6 +10,7 @@ namespace GestaoProdutos.Modelos.ViewModels
         public bool Ativo { get; set; }
         public DateTime DataFabricacao { get; set; }
         public DateTime DataValidade { get; set; }
+        public FornecedorViewModel Fornecedor { get; set; }
     }
 
     public class FornecedorViewModel

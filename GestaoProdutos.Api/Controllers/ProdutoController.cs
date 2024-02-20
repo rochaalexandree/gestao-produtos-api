@@ -34,7 +34,7 @@ namespace GestaoProdutos.Controllers
 
             return ToActionResult<BaseViewModel<IEnumerable<ProdutoViewModel>>>(resultado, _mapper);
         }
-        
+
         [HttpGet("{codigo}")]
         public async Task<IActionResult> GetPorCodigoAsync([FromRoute] int codigo, CancellationToken cancellationToken)
         {
@@ -51,15 +51,15 @@ namespace GestaoProdutos.Controllers
             return ToActionResult(resultado);
         }
 
-        [HttpPut]
-        public async Task<IActionResult> PutAsync([FromBody] ProdutoDto produto, CancellationToken cancellationToken)
+        [HttpPut("{codigo}")]
+        public async Task<IActionResult> PutAsync([FromRoute] int codigo, [FromBody] ProdutoDto produto, CancellationToken cancellationToken)
         {
-            var resultado = await _servicoProduto.AtualizarProdutoAsync(produto, cancellationToken);
+            var resultado = await _servicoProduto.AtualizarProdutoAsync(codigo, produto, cancellationToken);
             
             return ToActionResult(resultado);
         }
 
-        [HttpDelete]
+        [HttpDelete("{codigo}")]
         public async Task<IActionResult> DeleteAsync([FromRoute] int codigo, CancellationToken cancellationToken)
         {
             var resultado = await _servicoProduto.ExcluirProdutoAsync(codigo, cancellationToken);

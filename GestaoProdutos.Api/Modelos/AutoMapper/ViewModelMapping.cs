@@ -17,6 +17,10 @@ namespace GestaoProdutos.Modelos.AutoMapper
 
             profile.CreateMap<Produto, ProdutoViewModel>()
                 .IncludeAllDerived();
+
+            profile.CreateMap<Fornecedor, FornecedorViewModel>()
+                .ForMember(dest => dest.Cnpj, opt => opt.MapFrom(src => src.Cnpj.Numero))
+                .IncludeAllDerived();
         }
     }
 }

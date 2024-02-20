@@ -33,17 +33,17 @@ namespace GestaoProdutos.Aplicacao
         public T Resultado { get; set; }
         public bool Sucesso { get; set; }
         public Paginacao Paginacao { get; set; }
-        public IEnumerable<Notification> Erros { get; set; } = null;
+        public IEnumerable<Notification> Erros { get; set; } = new List<Notification>();
 
         protected void AdicionarErro(string mensagem)
         {
-            Erros.ToList().Add(new Notification(string.Empty, mensagem));
+            Erros?.ToList().Add(new Notification(string.Empty, mensagem));
         }
         protected async Task<Resposta<T>> PersistirDados(IUnidadeDeTrabalho uow)
         {
             if (!await uow.Commit()) AdicionarErro("Erro ao persistir os dados.");
 
-            Sucesso = !Erros?.Any() ?? true;
+            Sucesso = !Erros.Any();
             return this;
         }
     }

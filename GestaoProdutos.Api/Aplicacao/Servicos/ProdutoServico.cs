@@ -41,7 +41,9 @@ namespace GestaoProdutos.Aplicacao.Servicos
             var produto = await _produtoRepositorio.ObterPorCodigoAsync(codigo, cancellationToken);
 
             produto.Desativar();
-            
+
+            _produtoRepositorio.Atualizar(produto);
+
             var resultado = await PersistirDados(_produtoRepositorio.UnidadeDeTrabalho);
 
             if (!resultado.Sucesso)
@@ -62,14 +64,16 @@ namespace GestaoProdutos.Aplicacao.Servicos
             return new Resposta<object>(await _produtoRepositorio.ObterPorCodigoAsync(codigo, cancellationToken));
         }
 
-        public async Task<Resposta<Guid>> AtualizarProdutoAsync(ProdutoDto produtoDto, CancellationToken cancellationToken)
+        public async Task<Resposta<Guid>> AtualizarProdutoAsync(int codigo, ProdutoDto produtoDto, CancellationToken cancellationToken)
         {
-            var produto = await _produtoRepositorio.ObterPorCodigoAsync(produtoDto.Codigo.Value, cancellationToken);
+            var produto = await _produtoRepositorio.ObterPorCodigoAsync(codigo, cancellationToken);
 
             produto.AtualizarProduto(produtoDto.Descricao, produtoDto.DataFabricacao, produtoDto.DataValidade, produtoDto.FornecedorId ?? produto.FornecedorId);
 
             if (!produto.IsValid)
                 return new Resposta<Guid>(produto.Notifications);
+
+            _produtoRepositorio.Atualizar(produto);
 
             var resultado = await PersistirDados(_produtoRepositorio.UnidadeDeTrabalho);
 

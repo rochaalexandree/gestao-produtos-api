@@ -5,7 +5,7 @@ using FluentAssertions;
 using System.Linq;
 namespace GestaoProdutos.Teste
 {
-    public class ProdutoTeste
+    public class ProdutoServicoTeste
     {
         [Fact(DisplayName = "Instanciar novo produto valido")]
         public void Produto_InstaciarNovoProduto_DeveEstarValido()
@@ -27,7 +27,7 @@ namespace GestaoProdutos.Teste
             produto.Notifications.First().Message.Should().Be("A data de fabricação não pode ser maior ou igual a data de validade.");
         }
 
-        [Fact(DisplayName = "Alterar data de validade do produto com uma data menor que a de fabricacao")]
+        [Fact(DisplayName = "Instanciar novo produto valido")]
         public void Produto_AlterarDataDeValidade_DeveEstarInvalidoComNotificationDeDataDeValidade()
         {
             var produto = new Produto("Produto teste", true, DateTime.Now, DateTime.Now.AddMonths(1), Guid.NewGuid());

@@ -89,9 +89,11 @@ namespace GestaoProdutos.Dominio.Entidades
 
         public Produto AtualizarProduto(string descricao, DateTime dataFabricacao, DateTime dataValidade, Guid? fornecedorId)
         {
+            AlterarDataFabricacao(DateTime.MinValue);
+            
             AlterarDescricao(descricao);
-            AlterarDataFabricacao(dataFabricacao);
             AlterarDataValidade(dataValidade);
+            AlterarDataFabricacao(dataFabricacao);
             AlterarFornecedor(fornecedorId);
 
             return this;

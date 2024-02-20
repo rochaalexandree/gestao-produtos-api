@@ -17,6 +17,6 @@ namespace GestaoProdutos.Aplicacao.Servicos
 
         Task<Resposta<object>> ObterProdutoPorCodigoAsync(int codigo, CancellationToken cancellationToken);
 
-        Task<Resposta<Guid>> AtualizarProdutoAsync(ProdutoDto produtoDto, CancellationToken cancellationToken);
+        Task<Resposta<Guid>> AtualizarProdutoAsync(int codigo, ProdutoDto produtoDto, CancellationToken cancellationToken);
     }
 }
