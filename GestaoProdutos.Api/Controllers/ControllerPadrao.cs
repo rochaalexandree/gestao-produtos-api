@@ -11,15 +11,12 @@ namespace GestaoProdutos.Controllers
     {
         protected ICollection<string> Erros = new List<string>();
 
-        protected ActionResult ToActionResult(object result = null)
+        protected ActionResult ToActionResult<T>(Resposta<T> resposta = null)
         {
-            if (ResultadoSucesso())
-                return Ok(result);
+            if (resposta.Sucesso)
+                return Ok(resposta);
 
-            return BadRequest(new ValidationProblemDetails(new Dictionary<string, string[]>
-            {
-                { "Mensagens", Erros.ToArray() }
-            }));
+            return BadRequest(resposta);
         }
 
         protected ActionResult ToActionResult<T>(Resposta<IEnumerable<object>> resposta, IMapper mapper)
@@ -27,21 +24,15 @@ namespace GestaoProdutos.Controllers
             if (ResultadoSucesso())
                 return Ok(mapper.Map<T>(resposta));
 
-            return BadRequest(new ValidationProblemDetails(new Dictionary<string, string[]>
-            {
-                { "Mensagens", Erros.ToArray() }
-            }));
+            return BadRequest(resposta);
         }
 
         protected ActionResult ToActionResult<T>(Resposta<object> resposta, IMapper mapper)
         {
-            if (ResultadoSucesso())
+            if (resposta.Sucesso)
                 return Ok(mapper.Map<T>(resposta));
 
-            return BadRequest(new ValidationProblemDetails(new Dictionary<string, string[]>
-            {
-                { "Mensagens", Erros.ToArray() }
-            }));
+            return BadRequest(resposta);
         }
 
         protected bool ResultadoSucesso()

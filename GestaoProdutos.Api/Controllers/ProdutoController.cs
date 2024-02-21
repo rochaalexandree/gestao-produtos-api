@@ -6,6 +6,7 @@ using GestaoProdutos.Dominio.Entidades;
 using GestaoProdutos.Modelos.Requests;
 using GestaoProdutos.Modelos.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
